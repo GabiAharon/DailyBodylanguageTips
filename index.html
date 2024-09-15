@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="he">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דף שינון ולמידה</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3b82f6">
+    <link rel="apple-touch-icon" href="icon-192x192.png">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Assistant:wght@400;700&display=swap');
+
+        body {
+            margin: 0;
+            font-family: 'Assistant', sans-serif;
+            direction: rtl;
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            overflow-x: hidden;
+            box-sizing: border-box;
+        }
+
+        header {
+            text-align: center;
+            padding: 20px;
+        }
+
+        header img {
+            max-width: 200px;
+            transition: transform 0.3s ease;
+        }
+
+        header img:hover {
+            transform: scale(1.2);
+        }
+
+        #tips {
+            text-align: center;
+            padding: 20px;
+            margin-bottom: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .tip-container {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 40px;
+            border-radius: 20px;
+            display: inline-block;
+            animation: fadeIn 1s ease-in-out;
+            width: 100%;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            margin: 0 auto;
+        }
+
+        #tip-text {
+            font-size: 2.2em;
+            font-weight: bold;
+            line-height: 1.3;
+        }
+
+        #quiz {
+            text-align: center;
+            padding: 20px;
+            width: 100%;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        #question-container {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        #question-container p {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #ffd700;
+            margin-bottom: 20px;
+        }
+
+        .answer-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .answer-button {
+            background-color: #ffd700;
+            color: #000;
+            border: none;
+            padding: 15px 20px;
+            font-size: 16px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: right;
+            white-space: normal;
+            height: auto;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .answer-button.selected {
+            background-color: #3b82f6;
+            color: #fff;
+        }
+
+        #results {
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        #results h2 {
+            color: #ffd700;
+            font-size: 2em;
+        }
+
+        #feedback {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+        }
+
+        .feedback-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 10px;
+            width: calc(50% - 20px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .feedback-item p {
+            font-size: 1em;
+            color: #fff;
+        }
+
+        /* עיצוב נקי לחלוטין עבור המשימה היומית, ללא רקע */
+        #daily-task {
+            text-align: center;
+            margin-top: 20px;
+            background: none;
+            box-shadow: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #task-text {
+            font-size: 1.5em;
+            font-weight: bold;
+            background: none;
+            box-shadow: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        /* אנימציית קונפטי */
+        .confetti {
+            position: fixed;
+            width: 10px;
+            height: 10px;
+            background-color: #f2d74e;
+            opacity: 0.7;
+            animation: confetti-fall 4s ease-in-out infinite;
+        }
+
+        @keyframes confetti-fall {
+            0% {
+                transform: translateY(-100%) rotate(0deg);
+            }
+            100% {
+                transform: translateY(100vh) rotate(720deg);
+            }
+        }
+
+        /* הוספת צבעים שונים לקונפטי */
+        .confetti-1 { background-color: #f2d74e; }
+        .confetti-2 { background-color: #95c3de; }
+        .confetti-3 { background-color: #ff9a91; }
+        .confetti-4 { background-color: #f2b2f2; }
+        .confetti-5 { background-color: #88ff88; }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+
+            header img {
+                max-width: 150px;
+            }
+
+            #tip-text {
+                font-size: 1.8em;
+            }
+
+            .answer-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .feedback-item {
+                width: 100%;
+            }
+
+            #task-text {
+                font-size: 1.5em;
+            }
+        }
+
+        /* הוספת מרווח אחיד בין האלמנטים */
+        section {
+            margin-bottom: 30px;
+        }
+    </style>
+    
+    <!-- הוספת אלמנט אודיו -->
+    <audio id="applauseSound" src="https://www.soundjay.com/human/applause-01.mp3" preload="auto"></audio>
+</head>
+<body>
+    <!-- לוגו -->
+    <header>
+        <img src="https://i.postimg.cc/1z4wp5xG/image.png" alt="לוגו">
+    </header>
+
+    <!-- טיפים מתחלפים -->
+    <section id="tips">
+        <div class="tip-container">
+            <p id="tip-text">טיפ 1: שמור על קשר עין עם הקהל שלך.</p>
+        </div>
+    </section>
+
+    <!-- שאלון יומי -->
+    <section id="quiz">
+        <h2>השאלון היומי שלך</h2>
+        <div id="question-container">
+            <!-- השאלות ייטענו כאן באמצעות JavaScript -->
+        </div>
+    </section>
+
+    <!-- תוצאות השאלון -->
+    <section id="results" class="hidden">
+        <h2>תוצאות השאלון</h2>
+        <p id="score"></p>
+        <div id="feedback"></div>
+    </section>
+
+    <!-- קונפטי -->
+    <div id="confetti-container"></div>
+
+    <!-- משימה יומית -->
+    <section id="daily-task">
+        <p id="task-text">משימה יומית: <span id="task-content"></span></p>
+    </section>
+
+    <script>
+        // טיפים מתחלפים
+        const tips = [
+            "טיפ 1: שמור על קשר עין עם הקהל שלך.",
+            "טיפ 2: השתמש בתנועות ידיים להדגשת נקודות.",
+            "טיפ 3: עמוד ישר כדי לשדר ביטחון.",
+            "טיפ 4: התאם את טון הדיבור שלך לתוכן.",
+            "טיפ 5: הקשב למשוב מהקהל."
+        ];
+
+        let tipIndex = 0;
+        const tipText = document.getElementById('tip-text');
+
+        function changeTip() {
+            tipIndex = (tipIndex + 1) % tips.length;
+            tipText.textContent = tips[tipIndex];
+            tipText.parentElement.classList.add('fade');
+            setTimeout(() => {
+                tipText.parentElement.classList.remove('fade');
+            }, 1000);
+        }
+
+        setInterval(changeTip, 5000);
+
+        // שאלון יומי
+        const questions = [
+            {
+                question: "מהי החשיבות של קשר עין עם הקהל?",
+                answers: ["יוצר אמון", "מסיח את הדעת", "מקטין את הביטחון", "לא חשוב כלל"],
+                correct: 0,
+                explanation: "שמירה על קשר עין עם הקהל יוצרת אמינות ואמון, ומשדר ביטחון למאזינים. היא מאפשרת לך לבנות קשר חזק עם הקהל."
+            },
+            {
+                question: "כיצד תנועות ידיים משפיעות על ההצגה?",
+                answers: ["מדגישות נקודות", "מבלבלות את הקהל", "לא משפיעות כלל", "מורידות עניין"],
+                correct: 0,
+                explanation: "תנועות ידיים יכולות לשמש כאמצעי להדגשת נקודות חשובות ולמשוך את תשומת הלב של הקהל למילים המרכזיות."
+            },
+            {
+                question: "מה משדר עמידה ישרה?",
+                answers: ["ביטחון עצמי", "עייפות", "חוסר עניין", "לחץ"],
+                correct: 0,
+                explanation: "עמידה ישרה משדרת ביטחון עצמי ויכולת הנהגה, מה שמקנה למציג מראה יותר אמין ומקצועי."
+            },
+            {
+                question: "מדוע חשוב להתאים את טון הדיבור לתוכן?",
+                answers: ["לשמירת עניין הקהל", "אין צורך להתאים", "כדי לבלבל את הקהל", "כדי להישמע מקצועי מדי"],
+                correct: 0,
+                explanation: "התאמת טון הדיבור לתוכן מאפשרת לשמור על עניין הקהל ומעבירה את המסר בצורה משכנעת ומותאמת."
+            },
+            {
+                question: "כיצד משפיע משוב מהקהל על המציג?",
+                answers: ["מאפשר שיפור מתמשך", "פוגע בביטחון", "לא משפיע כלל", "גורם לבלבול"],
+                correct: 0,
+                explanation: "קבלת משוב מהקהל היא חשובה לשיפור מתמשך של המציג, ומאפשרת למידה והתאמה להופעות עתידיות."
+            }
+        ];
+
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+
+        const questionContainer = document.getElementById('question-container');
+
+        function shuffleAnswers(answers) {
+            return answers.map((answer, index) => ({ answer, index }))
+                          .sort(() => Math.random() - 0.5);
+        }
+
+        function showQuestion() {
+            questionContainer.innerHTML = '';
+            const q = questions[currentQuestionIndex];
+            const questionElement = document.createElement('p');
+            questionElement.textContent = q.question;
+            questionContainer.appendChild(questionElement);
+
+            const answerGrid = document.createElement('div');
+            answerGrid.classList.add('answer-grid');
+
+            const shuffledAnswers = shuffleAnswers(q.answers);
+
+            shuffledAnswers.forEach(({ answer, index }) => {
+                const button = document.createElement('button');
+                button.textContent = answer;
+                button.classList.add('answer-button');
+                button.dataset.index = index; // שמירת האינדקס המקורי כמאפיין נתונים
+                button.onclick = () => selectAnswer(index);
+                answerGrid.appendChild(button);
+            });
+
+            questionContainer.appendChild(answerGrid);
+        }
+
+        function selectAnswer(index) {
+            const buttons = document.querySelectorAll('.answer-button');
+            buttons.forEach(button => button.classList.remove('selected'));
+            const selectedButton = document.querySelector(`.answer-button[data-index="${index}"]`);
+            selectedButton.classList.add('selected');
+
+            userAnswers.push(index);
+            currentQuestionIndex++;
+            if (currentQuestionIndex < questions.length) {
+                setTimeout(showQuestion, 500);
+            } else {
+                setTimeout(showResults, 500);
+            }
+        }
+
+        function showResults() {
+            document.getElementById('quiz').classList.add('hidden');
+            document.getElementById('results').classList.remove('hidden');
+
+            let score = 0;
+            const feedbackContainer = document.getElementById('feedback');
+            feedbackContainer.innerHTML = '';
+
+            questions.forEach((q, i) => {
+                const isCorrect = userAnswers[i] === q.correct;
+                if (isCorrect) score++;
+
+                const feedbackItem = document.createElement('div');
+                feedbackItem.classList.add('feedback-item');
+                feedbackItem.innerHTML = `
+                    <p><strong>שאלה ${i + 1}:</strong> ${q.question}</p>
+                    <p>תשובתך: ${q.answers[userAnswers[i]]}</p>
+                    <p>תשובה נכונה: ${q.answers[q.correct]}</p>
+                    <p style="color: ${isCorrect ? 'green' : 'red'};">${isCorrect ? 'נכון' : 'לא נכון'}</p>
+                    <p>${q.explanation}</p>
+                `;
+                feedbackContainer.appendChild(feedbackItem);
+            });
+
+            document.getElementById('score').textContent = `ציון: ${score} מתוך ${questions.length}`;
+
+            // הפעלת קונפטי וסאונד במקרה שכל התשובות נכונות
+            if (score === questions.length) {
+                startConfetti();
+                playApplause();
+            }
+        }
+
+        // פונקציה חדשה להשמעת סאונד כפיים
+        function playApplause() {
+            const applauseSound = document.getElementById('applauseSound');
+            applauseSound.play();
+        }
+
+        // הפעלת קונפטי
+        function startConfetti() {
+            const confettiContainer = document.getElementById('confetti-container');
+            confettiContainer.innerHTML = ''; // ניקוי קונפטי קודם
+            
+            const confettiCount = 200; // הגדלת מספר חתיכות הקונפטי
+            
+            for (let i = 0; i < confettiCount; i++) {
+                const confetti = document.createElement('div');
+                confetti.classList.add('confetti', `confetti-${Math.floor(Math.random() * 5) + 1}`);
+                
+                // מיקום אקראי
+                confetti.style.left = `${Math.random() * 100}vw`;
+                
+                // גודל אקראי
+                const size = Math.random() * 10 + 5;
+                confetti.style.width = `${size}px`;
+                confetti.style.height = `${size}px`;
+                
+                // מהירות נפילה אקראית
+                confetti.style.animationDuration = `${Math.random() * 3 + 2}s`;
+                
+                // עיכוב התחלה אקראי
+                confetti.style.animationDelay = `${Math.random() * 4}s`;
+                
+                confettiContainer.appendChild(confetti);
+            }
+            
+            // הסרת הקונפטי אחרי 10 שניות
+            setTimeout(() => {
+                confettiContainer.innerHTML = '';
+            }, 10000);
+        }
+
+        // הצגת השאלה הראשונה
+        showQuestion();
+
+        const tasks = [
+            "שים לב על איזה אדם הצלחת להשפיע ואיך עשית זאת.",
+            "נסה לתרגל קשר עין עם לפחות 3 אנשים היום.",
+            "הקשב לטון הדיבור שלך במהלך היום ונסה להתאים אותו למצבים שונים.",
+            // הוסף עוד משימות כאן
+        ];
+
+        function changeTask() {
+            const taskIndex = Math.floor(Math.random() * tasks.length);
+            document.getElementById('task-content').textContent = tasks[taskIndex];
+        }
+
+        // מחליף את המשימה היומית בכל טעינה של הדף
+        changeTask();
+
+        // רישום ה-Service Worker
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/service-worker.js').then(function(registration) {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                }, function(err) {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+            });
+        }
+    </script>
+</body>
+</html>
