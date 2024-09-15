@@ -1,20 +1,20 @@
 {
-  "name": "דף שינון ולמידה",
-  "short_name": "שינון ולמידה",
-  "start_url": "/index.html",
-  "display": "standalone",
-  "background_color": "#1e3a8a",
-  "theme_color": "#3b82f6",
-  "icons": [
-    {
-      "src": "icon-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png"
-    },
-    {
-      "src": "icon-512x512.png",
-      "sizes": "512x512",
-      "type": "image/png"
-    }
-  ]
-}
+    "name": "דף שינון ולמידה",
+    "short_name": "שינון ולמידה",
+    "start_url": "https://gabiaharon.github.io/DailyBodylanguageTips/",
+    "display": "standalone",
+    "background_color": "#1e3a8a",
+    "theme_color": "#3b82f6",
+    "icons": [
+      {
+        "src": "https://gabiaharon.github.io/DailyBodylanguageTips/icon-192x192.png",
+        "sizes": "192x192",
+        "type": "image/png"
+      },
+      {
+        "src": "https://gabiaharon.github.io/DailyBodylanguageTips/icon-512x512.png",
+        "sizes": "512x512",
+        "type": "image/png"
+      }
+    ]
+  }
